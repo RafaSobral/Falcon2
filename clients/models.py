@@ -13,7 +13,13 @@ class Client(models.Model):
     start_date = models.DateField(default=date.today, editable=True)  
     end_date = models.DateField(blank=True, null=True, editable=False)  
     final_approved_frame_folder = models.CharField(max_length=255, blank=True, null=True)  
-    client_email = models.EmailField(max_length=255, blank=True, null=True) 
+    client_email = models.EmailField(
+        max_length=255,
+        unique=True,
+        error_messages={
+            'unique': 'Um cliente com este e-mail já está cadastrado.'
+        }
+    )
     client_phone = models.CharField(max_length=20, blank=True, null=True)
     custom_link = models.SlugField(max_length=255, unique=True, blank=True, null=True)
 

@@ -4,6 +4,8 @@ from .forms import ClientForm, ClientUploadForm
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 class ClientCreateView(CreateView):
     model = Client
@@ -28,3 +30,22 @@ def upload_file(request, custom_link):
             return JsonResponse({'status': 'error', 'errors': form.errors})
 
     return render(request, 'upload.html', {'client': client})
+
+def check_client_email(request):
+    email = request.GET.get('email', '')
+    
+    try:
+        # Valida o formato do e-mail
+        validate_email(email)
+        # Verifica se o e-mail já existe
+        exists = Client.objects.filter(client_email__iexact=email).exists()
+        return JsonResponse({
+            'exists': exists,
+            'valid': True
+        })
+    except ValidationError:
+        return JsonResponse({
+            'exists': False,
+            'valid': False,
+            'message': 'E-mail inválido'
+        })

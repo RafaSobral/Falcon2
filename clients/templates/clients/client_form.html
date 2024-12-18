@@ -4,24 +4,118 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastrar Cliente</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'client_form.css' %}">
+    <link rel="stylesheet" href="{% static 'reset.css' %}">
+    <style>
+        .popup {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 5px;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            animation: slideIn 0.5s ease-in-out;
+        }
+        
+        .success {
+            background-color: #4CAF50;
+        }
+        
+        .error {
+            background-color: #f44336;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo {
+            max-width: 200px;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
-    <h1>Cadastrar Cliente</h1>
-    <form method="post">
-        {% csrf_token %}
-        <p>
-            <label for="id_client_name">Nome do Cliente:</label>
-            {{ form.client_name }}
-        </p>
-        <p>
-            <label for="id_client_email">Email do Cliente:</label>
-            {{ form.client_email }}
-        </p>
-        <p>
-            <label for="id_start_date">Data de Início:</label>
-            <input type="date" name="start_date" id="id_start_date" required value="{% now 'Y-m-d' %}">
-        </p>
-        <button type="submit">Salvar</button>
-    </form>
+    <div class="form-container">
+        <div class="logo-container">
+            <img src="{% static 'img/logo.avif' %}" alt="Logo do Projeto" class="logo">
+        </div>
+        <h1>Cadastrar Cliente</h1>
+        <form method="post" id="clientForm">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_client_name">Nome do Cliente:</label>
+                {{ form.client_name }}
+            </div>
+            
+            <div class="form-group">
+                <label for="id_client_email">Email do Cliente:</label>
+                {{ form.client_email }}
+            </div>
+            
+            <div class="form-group">
+                <label for="id_start_date">Data de Início:</label>
+                <input type="date" name="start_date" id="id_start_date" required value="{% now 'Y-m-d' %}">
+            </div>
+            
+            <button type="submit">Salvar</button>
+        </form>
+    </div>
+
+    <div id="popup" class="popup"></div>
+
+    <script>
+        function showPopup(message, isSuccess) {
+            const popup = document.getElementById('popup');
+            popup.textContent = message;
+            popup.className = 'popup ' + (isSuccess ? 'success' : 'error');
+            popup.style.display = 'block';
+            
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 3000);
+        }
+
+        document.getElementById('clientForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                const formData = new FormData(e.target);
+                const response = await fetch(window.location.href, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    }
+                });
+
+                if (response.ok) {
+                    showPopup('Cliente cadastrado com sucesso!', true);
+                    setTimeout(() => {
+                        window.location.href = '/clients/';
+                    }, 3000);
+                } else {
+                    showPopup('Erro ao cadastrar cliente. Tente novamente.', false);
+                }
+            } catch (error) {
+                showPopup('Erro de conexão. Tente novamente.', false);
+            }
+        });
+    </script>
 </body>
 </html>
