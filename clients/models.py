@@ -10,7 +10,7 @@ class Client(models.Model):
     clickup_folder_id = models.CharField(max_length=255, blank=True, null=True)  
     frame_folder_id = models.CharField(max_length=255, blank=True, null=True) 
     is_active = models.BooleanField(default=True) 
-    start_date = models.DateField(default=date.today, editable=False)  
+    start_date = models.DateField(default=date.today, editable=True)  
     end_date = models.DateField(blank=True, null=True, editable=False)  
     final_approved_frame_folder = models.CharField(max_length=255, blank=True, null=True)  
     client_email = models.EmailField(max_length=255, blank=True, null=True) 
@@ -18,7 +18,7 @@ class Client(models.Model):
     custom_link = models.SlugField(max_length=255, unique=True, blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        print("Chamando save() do modelo Client.")  # Log para debug
+        print("Chamando save() do modelo Client.")  # Log
 
         if not self.frame_folder_id: 
             print("Criando pasta no Frame.io...")
@@ -68,7 +68,7 @@ class Client(models.Model):
         """
         Cria uma pasta no ClickUp e retorna o ID da pasta criada.
         """
-        space_id = "90070241014" # Substitua pelo ID do espaço correto
+        space_id = "90070241014"
         url = f"https://api.clickup.com/api/v2/space/{space_id}/folder"
         payload = {
             "name": self.client_name
@@ -76,7 +76,7 @@ class Client(models.Model):
         headers = {
             "Content-Type": "application/json",
             "Accept": "application/json",
-            "Authorization": "pk_82187560_FOKKW5MW9UWBXR4H6D1DLZ8AMOB5QKDJ" # Substitua pelo token correto
+            "Authorization": "pk_82187560_FOKKW5MW9UWBXR4H6D1DLZ8AMOB5QKDJ"
         }
 
         try:
