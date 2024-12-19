@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "falcon-file-system",
+  "private_key_id": "1304bea1f2825c43eeb3201bdd90cdabe5ea97a2",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC+Q0x8ozlZGXWw\ns19UqWpweJcD1z3ySCd30NMtbz0lYT0oKEd9VYtwZ0Je9TgntVnnvIcWFBdB7iJX\nPRLhrbN/LQXs9Qn7wI4HFTPpIhAQBe/vK3dQsnmFAUuIbXhLTWezQxSwGncssQ/e\n5wlxefmVRvxTQcYh2kV6ozR+clG7NjyiQ0Eq2sl6iOLJkXp96z7sCSIXkPDAWPzh\najM6oPpPKEG+rmWelTSdcAty+f0g1EaitJ5IIYQxSS37BH/br5BdIm7FDrtaiA72\nYs9eTD88kYhwUV4NBdNi8oBPDB+P2CubpO9ZeB+fi2p4ge8p/6mnPPTPBQAznv1s\niQn7eeX5AgMBAAECggEADxtxYpEkT9STcXsgpeyI0NLmbM3ls4vypFMevYQQZxws\nOrjOCl/lQUDVtowCkDaYY6vmzwQ734aMz///tI8yCjZVOt4vE4AT1vCiTU/g1iDe\njw9Uu0Hcn8i9SmEk1NfZ1NRN+3iyf0g04iZWq927SVTYWrUFijEWZLk6RRMHNdXi\n0CpcON9XnAcsTlfsxlSDRUeL52leYa8w7g0iwYYK7v7dUzjp/8Qdw2tJ0W+cTp+s\nnZOrzTy8yLQ0ppWO+2gdh/l3aK6MwXlLYCaXc5dU7UILRwMCEHm9i3A0J5syHaeb\n8lc5YQ0oBhTCjEyv0NPm7v2Jvp1+qMaaUdgpEAGGbQKBgQDmnSmLLFzD1MIj5Pyd\ntID0+Nwb+PWApsPq8Un/KzO3pVbliI6o0h+vtTLGKPCBMvmZAyoRy9Gw7QXoOu/W\nSu8Zdy5OptU3aDd03cyj+NN1J0IlRhXI9mCbm1XUx2gFR1vPpnrxulEOr8g2S66j\nrk6IPuWNv2tU0PhWo+EkBH8LDQKBgQDTNQU6ArH/bkUpQJcFbyPWFKM+U8Yc2Loe\n7QkadWTZoSg2BPEHKSlzEniQXMvXvZg0H4I3VULZVTYIpdZHi6fCWNyUNi9PeoWX\nuZ3gN4vgU9BsxIHnPtKsYEcBELG039k/SqUN4SV2r3NHmrQsVFyjFFE3jisA4sFC\n7qkCgIzbnQKBgQCB//Z7Tfa9LiKCuYLuI+LONbteyWkbrOakeoCMJ35v9/SUT/ab\nlFfoZOzKaCmrq2CosO/2OD9szTCXSSIKWxON93FTRRjMsyMP7jh99ra9Q/Q1rtx4\n/OpYzagE2qP41dEbrW2A9tbawJzMfr1j5869XzdoQI/wsBxOOvOfqikzwQKBgDL4\ncLJ3RA2oxvgVplyhXbykbmD0RrNfektMWQ4Rlq0Ov22J88EOpfonUwFD483E655o\nnDxOTzuz3L5phzTs9ydn2pPKH9DGeMcM/JTH0vHoSDx3kAIGn0EKWxhetwQ3oW4s\nzXh0BV6HKQL2ytSH53NTy+XkYWxtTMaiYhdAfr3hAoGBALqf0jFWRRKEwOIcu+Of\nSwigrhZ6hXqYcFtQp7KKXmyYb7wS8gItPDmGritMwzxVViM03Ct8ZlHZOoslGeQ2\n4U7sxaQPHjPSG791qhF9tAwM/n4TbkLMGqFPoBp7fyreysCMrNHzgU8oUyu9KZQH\nxpFTs3E1oKf18lwFObPEiQht\n-----END PRIVATE KEY-----\n",
+  "client_email": "falconsystem@falcon-file-system.iam.gserviceaccount.com",
+  "client_id": "110142377705289220927",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/falconsystem%40falcon-file-system.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

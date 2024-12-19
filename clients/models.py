@@ -2,6 +2,9 @@ from django.db import models
 from datetime import date
 import requests
 from django.utils.text import slugify
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
+import os
 
 
 class Client(models.Model):
@@ -22,10 +25,16 @@ class Client(models.Model):
     )
     client_phone = models.CharField(max_length=20, blank=True, null=True)
     custom_link = models.SlugField(max_length=255, unique=True, blank=True, null=True)
+    drive_folder_id = models.CharField(max_length=255, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         print("Chamando save() do modelo Client.")  # Log
 
+        if not self.drive_folder_id:
+            print("Criando pasta no Google Drive...")
+            self.drive_folder_id = self.create_drive_folder()
+            print(f"drive_folder_id retornado: {self.drive_folder_id}")
+            
         if not self.frame_folder_id: 
             print("Criando pasta no Frame.io...")
             self.frame_folder_id = self.create_frameio_project()
@@ -93,6 +102,56 @@ class Client(models.Model):
         except requests.RequestException as e:
             print(f"Erro ao criar pasta no ClickUp: {e}")
             return None
+        
+    def create_drive_folder(self):
+        """
+        Cria uma pasta no Google Drive e a compartilha com o email fornecido pelo cliente.
+        """
+        try:
+            SCOPES = ['https://www.googleapis.com/auth/drive.file']
+            SERVICE_ACCOUNT_FILE = r"C:\Users\Matheus\Documents\falcon\falcon-system\setup\falcon-file-system-1304bea1f282.json"
+            
+            credentials = service_account.Credentials.from_service_account_file(
+                SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+            
+            service = build('drive', 'v3', credentials=credentials)
+            
+            # Metadata da pasta
+            file_metadata = {
+                'name': self.client_name,
+                'mimeType': 'application/vnd.google-apps.folder',
+                'parents': ['1u8HYjvga0oZlM-fs8Rqu5MXXpjVSIHhC']  # Substitua pelo ID da sua pasta pai
+            }
+
+            # Criar pasta
+            file = service.files().create(
+                body=file_metadata,
+                fields='id'
+            ).execute()
+
+            folder_id = file.get('id')
+            print(f"Pasta criada com sucesso no Drive: {folder_id}")
+
+            # Compartilhar a pasta com o email do cliente, se fornecido
+            if self.client_email:
+                permission = {
+                    'type': 'user',
+                    'role': 'writer',
+                    'emailAddress': self.client_email
+                }
+                service.permissions().create(
+                    fileId=folder_id,
+                    body=permission,
+                    sendNotificationEmail=True
+                ).execute()
+                print(f"Pasta compartilhada com {self.client_email}")
+
+            return folder_id
+        except Exception as e:
+            print(f"Erro ao criar pasta no Google Drive: {e}")
+            return None
+
+    
 
 
 class ClientUpload(models.Model):
