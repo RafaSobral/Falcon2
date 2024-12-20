@@ -4,11 +4,12 @@ import requests
 from django.utils.text import slugify
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-import os
+import uuid
 
 
 class Client(models.Model):
-    client_id = models.AutoField(primary_key=True) 
+    client_id = models.AutoField(primary_key=True)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True) 
     client_name = models.CharField(max_length=255) 
     clickup_folder_id = models.CharField(max_length=255, blank=True, null=True)  
     frame_folder_id = models.CharField(max_length=255, blank=True, null=True) 
@@ -20,10 +21,9 @@ class Client(models.Model):
         max_length=255,
         unique=True,
         error_messages={
-            'unique': 'Um cliente com este e-mail já está cadastrado.'
+            'unique': 'A customer with this email is already registered.'
         }
     )
-    client_phone = models.CharField(max_length=20, blank=True, null=True)
     custom_link = models.SlugField(max_length=255, unique=True, blank=True, null=True)
     drive_folder_id = models.CharField(max_length=255, blank=True, null=True)
 
@@ -58,7 +58,8 @@ class Client(models.Model):
 
     def create_frameio_project(self):
         """
-        Cria um projeto no Frame.io e retorna o ID da pasta criada.
+        Cria um projeto no Frame.io com as pastas 'Raw upload' e 'Final approval'
+        e retorna o ID do projeto criado.
         """
         team_id = "cc85cc50-09c7-42ab-8abb-136cec334e71" #teamID Letelba Neto
         url = f"https://api.frame.io/v2/teams/{team_id}/projects"
@@ -71,14 +72,63 @@ class Client(models.Model):
         }
 
         try:
+            
             response = requests.post(url, json=payload, headers=headers)
-            print(f"Resposta da API: {response.status_code}, {response.text}") 
+            print(f"Resposta da API (criar projeto): {response.status_code}, {response.text}") 
             response.raise_for_status()
-            return response.json().get("id")
-        except requests.RequestException as e:
-            print(f"Erro ao criar projeto no Frame.io: {e}")
-            return None
+            project_data = response.json()
+            project_id = project_data.get("id")
+            
+            if not project_id:
+                raise Exception("ID do projeto não encontrado na resposta")
 
+            
+            project_url = f"https://api.frame.io/v2/projects/{project_id}"
+            project_response = requests.get(project_url, headers=headers)
+            project_response.raise_for_status()
+            root_asset_id = project_response.json().get('root_asset_id')
+
+            if not root_asset_id:
+                raise Exception("root_asset_id não encontrado")
+
+            
+            folder_url = f"https://api.frame.io/v2/assets/{root_asset_id}/children"
+            
+           
+            raw_payload = {
+                "name": "Raw upload",
+                "type": "folder",
+                "project_id": project_id
+            }
+            raw_response = requests.post(folder_url, json=raw_payload, headers=headers)
+            raw_response.raise_for_status()
+            print(f"Pasta Raw upload criada: {raw_response.status_code}")
+
+     
+            final_payload = {
+                "name": "Final approval",
+                "type": "folder",
+                "project_id": project_id
+            }
+            final_response = requests.post(folder_url, json=final_payload, headers=headers)
+            final_response.raise_for_status()
+            print(f"Pasta Final approval criada: {final_response.status_code}")
+            
+         
+            final_folder_id = final_response.json().get('id')
+            if final_folder_id:
+             self.final_approved_frame_folder = final_folder_id
+           
+            
+            return project_id
+
+        except requests.RequestException as e:
+            print(f"Erro ao criar projeto ou pastas no Frame.io: {e}")
+            return None
+        except Exception as e:
+            print(f"Erro inesperado: {e}")
+            return None
+        
     def create_clickup_folder(self):
         """
         Cria uma pasta no ClickUp e retorna o ID da pasta criada.
@@ -116,14 +166,14 @@ class Client(models.Model):
             
             service = build('drive', 'v3', credentials=credentials)
             
-            # Metadata da pasta
+          
             file_metadata = {
                 'name': self.client_name,
                 'mimeType': 'application/vnd.google-apps.folder',
-                'parents': ['1u8HYjvga0oZlM-fs8Rqu5MXXpjVSIHhC']  # Substitua pelo ID da sua pasta pai
+                'parents': ['1u8HYjvga0oZlM-fs8Rqu5MXXpjVSIHhC']  
             }
 
-            # Criar pasta
+           
             file = service.files().create(
                 body=file_metadata,
                 fields='id'
@@ -132,7 +182,7 @@ class Client(models.Model):
             folder_id = file.get('id')
             print(f"Pasta criada com sucesso no Drive: {folder_id}")
 
-            # Compartilhar a pasta com o email do cliente, se fornecido
+     
             if self.client_email:
                 permission = {
                     'type': 'user',

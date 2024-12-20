@@ -55,25 +55,25 @@
         <div class="logo-container">
             <img src="{% static 'img/logo.avif' %}" alt="Logo do Projeto" class="logo">
         </div>
-        <h1>Cadastrar Cliente</h1>
+        <h1>Register New Customer</h1>
         <form method="post" id="clientForm">
             {% csrf_token %}
             <div class="form-group">
-                <label for="id_client_name">Nome do Cliente:</label>
+                <label for="id_client_name">Client name:</label>
                 {{ form.client_name }}
             </div>
             
             <div class="form-group">
-                <label for="id_client_email">Email do Cliente:</label>
+                <label for="id_client_email">Client mail:</label>
                 {{ form.client_email }}
             </div>
             
             <div class="form-group">
-                <label for="id_start_date">Data de Início:</label>
+                <label for="id_start_date">Start Date:</label>
                 <input type="date" name="start_date" id="id_start_date" required value="{% now 'Y-m-d' %}">
             </div>
             
-            <button type="submit">Salvar</button>
+            <button type="submit">Save</button>
         </form>
     </div>
 
@@ -105,15 +105,15 @@
                 });
 
                 if (response.ok) {
-                    showPopup('Cliente cadastrado com sucesso!', true);
+                    showPopup('Customer successfully registered!', true);
                     setTimeout(() => {
                         window.location.href = '/clients/';
                     }, 3000);
                 } else {
-                    showPopup('Erro ao cadastrar cliente. Tente novamente.', false);
+                    showPopup('Error registering customer. Please try again.', false);
                 }
             } catch (error) {
-                showPopup('Erro de conexão. Tente novamente.', false);
+                showPopup('Connection error. Please try again.', false);
             }
         });
     </script>
