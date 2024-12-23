@@ -20,14 +20,15 @@ def upload_file(request, custom_link):
     client = get_object_or_404(Client, custom_link=custom_link)
 
     if request.method == 'POST':
-        form = ClientUploadForm(request.POST, request.FILES)
-        if form.is_valid():
-            upload = form.save(commit=False)
-            upload.client = client
+        files = request.FILES.getlist('file')  # Captura todos os arquivos enviados
+        if not files:
+            return JsonResponse({'status': 'error', 'errors': {'file': ['Nenhum arquivo enviado.']}})
+
+        for file in files:
+            upload = ClientUpload(client=client, file=file)
             upload.save()
-            return JsonResponse({'status': 'success', 'message': 'Arquivo enviado com sucesso!'})
-        else:
-            return JsonResponse({'status': 'error', 'errors': form.errors})
+
+        return JsonResponse({'status': 'success', 'message': 'Arquivos enviados com sucesso!'})
 
     return render(request, 'upload.html', {'client': client})
 

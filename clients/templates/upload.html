@@ -1,18 +1,157 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload de Arquivos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'client_form.css' %}">
+    <style>
+         .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo {
+            max-width: 200px;
+            height: auto;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .upload-container {
+            box-sizing: border-box;
+            max-width: 600px;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px !important;
+        }
+
+        input[type="file"] {
+    display: none; /* Garante que o campo de upload está oculto */
+}
+
+.drag-drop {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column; /* Garante que o texto fique centralizado */
+    text-align: center; /* Centraliza o texto */
+    height: 150px; /* Altura suficiente para drag-and-drop */
+    border: 2px dashed #1F2D3D;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #f3f3f3;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.drag-drop p {
+    margin: 0;
+    color: #555;
+    font-size: 16px;
+}
+
+.drag-drop.dragover {
+    background-color: #e6e6e6;
+    border-color: #007bff;
+}
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 14px;
+            background-color: #1F2D3D;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #1f2d3dcb;
+        }
+
+        .file-list {
+            margin-top: 20px;
+            text-align: left;
+            list-style: none;
+            padding: 0;
+        }
+
+        .file-list li {
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
 </head>
 <body>
-    <h1>Upload de Arquivos para {{ client.client_name }}</h1>
+    <div class="upload-container">
 
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <label for="file">Escolha um arquivo:</label>
-        <input type="file" name="file" id="file" required>
-        <button type="submit">Enviar</button>
-    </form>
+        <div class="logo-container">
+            <img src="{% static 'img/logo.avif' %}" alt="Logo do Projeto" class="logo">
+        </div>        <h1>Hello {{ client.client_name }}, upload your raw files here.</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label class="drag-drop" id="drop-zone">
+                <p>Drag your videos here or click to select</p>
+                <input type="file" name="files" id="file-input" multiple>
+            </label>
+            <ul class="file-list" id="file-list"></ul>
+            <button type="submit">Enviar Arquivos</button>
+        </form>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const fileList = document.getElementById('file-list');
+
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+
+        function handleFiles(files) {
+            fileList.innerHTML = '';
+            Array.from(files).forEach(file => {
+                const li = document.createElement('li');
+                li.textContent = file.name;
+                fileList.appendChild(li);
+            });
+        }
+    </script>
 </body>
 </html>
