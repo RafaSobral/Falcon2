@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'clients',  
+    'clients',
+    'storages',  
 ]
 
 MIDDLEWARE = [
@@ -126,3 +127,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 FRAMEIO_BEARER_TOKEN = 'fio-u-KCOIl1lTWtAsW5lQzWa7ohesowh3dPqOeNOYaUd0wZid_8a4UgXSWK1O04sd7VJv'
 FRAMEIO_TEAM_ID = 'cc85cc50-09c7-42ab-8abb-136cec334e71'
+
+
+# Configurações do S3
+AWS_ACCESS_KEY_ID = 'AKIAZ7SALK5PMRSG2BWC'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'falcon-aws-bucket'
+AWS_S3_REGION_NAME = 'sa-east-1'  # Ex.: 'us-east-1'
+AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+
+# Configuração para uploads de mídia
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

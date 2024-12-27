@@ -45,16 +45,16 @@
         }
 
         input[type="file"] {
-    display: none; /* Garante que o campo de upload está oculto */
+    display: none; 
 }
 
 .drag-drop {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column; /* Garante que o texto fique centralizado */
-    text-align: center; /* Centraliza o texto */
-    height: 150px; /* Altura suficiente para drag-and-drop */
+    flex-direction: column; 
+    text-align: center; 
+    height: 150px; 
     border: 2px dashed #1F2D3D;
     border-radius: 10px;
     padding: 20px;
@@ -113,9 +113,9 @@
         </div>        <h1>Hello {{ client.client_name }}, upload your raw files here.</h1>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <label class="drag-drop" id="drop-zone">
+            <label  for="file-input"  class="drag-drop" id="drop-zone">
                 <p>Drag your videos here or click to select</p>
-                <input type="file" name="files" id="file-input" multiple>
+                <input type="file" name="files" id="file-input" multiple>  <!-- Nome ajustado para 'files' -->
             </label>
             <ul class="file-list" id="file-list"></ul>
             <button type="submit">Enviar Arquivos</button>
@@ -145,13 +145,32 @@
         fileInput.addEventListener('change', () => handleFiles(fileInput.files));
 
         function handleFiles(files) {
-            fileList.innerHTML = '';
-            Array.from(files).forEach(file => {
-                const li = document.createElement('li');
-                li.textContent = file.name;
-                fileList.appendChild(li);
-            });
-        }
+             fileList.innerHTML = '';
+                Array.from(files).forEach((file, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+            ${file.name} 
+            <button class="remove-btn" data-index="${index}">Remover</button>
+        `;
+        fileList.appendChild(li);
+    });
+
+    document.querySelectorAll('.remove-btn').forEach((button) => {
+        button.addEventListener('click', (e) => {
+            const index = e.target.getAttribute('data-index');
+            removeFile(index);
+        });
+    });
+}
+
+
+function removeFile(index) {
+    const updatedFiles = Array.from(fileInput.files).filter((_, i) => i != index);
+    const dataTransfer = new DataTransfer();
+    updatedFiles.forEach(file => dataTransfer.items.add(file));
+    fileInput.files = dataTransfer.files;
+    handleFiles(fileInput.files);
+}
     </script>
 </body>
 </html>
