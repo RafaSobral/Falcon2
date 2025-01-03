@@ -1,0 +1,63 @@
+
+{% load i18n %}
+{% load allauth %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login com Google</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'client_form.css' %}">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo {
+            max-width: 200px;
+            height: auto;
+        }
+        .button {
+            background-color: #4285F4;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="logo-container">
+            <img src="{% static 'img/logo.avif' %}" alt="Logo do Projeto" class="logo">
+        </div>
+        <h1>Collaborator Login</h1>
+        
+        {% block content %}
+        <form method="post" >
+            {% csrf_token %}  
+            <button type="submit" class="button">
+            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google Logo" style="width: 20px; height: 20px;">
+            {% trans "Sign in with Google" %}
+        </button>
+
+        </form>
+        {% endblock content %}
+
+    </div>
+</body>
+</html>
+
+
